@@ -1,3 +1,6 @@
+// Definición de un texto extenso que se usará como dato de prueba
+// Este texto largo (aproximadamente 2KB) simula una carga de datos sustancial
+// que podría causar bloqueos en el hilo principal si se procesara directamente
 let textMuyLargo = `Lorem ipsum dolor sit amet, consectetur 
 adipiscing elit. Praesent massa sem, interdum sed vulputate id, 
 hendrerit eget erat. Fusce tincidunt vulputate vestibulum. 
@@ -53,14 +56,46 @@ augue feugiat, scelerisque quam. Nullam at est sapien. Curabitur rutrum
 mauris metus, eget facilisis ligula lobortis sed. Integer rhoncus ipsum 
 purus, ut faucibus dolor auctor eget.`
 
-// Como crear un worker
+// Creación de una instancia de Web Worker
+// Un Web Worker ejecuta código JavaScript en un hilo separado del hilo principal,
+// permitiendo realizar tareas intensivas sin bloquear la interfaz de usuario
+// La ruta './js/worker.js' es relativa a la ubicación del HTML que carga este script
 const miWorker = new Worker('./js/worker.js');
 
-// Así se envia un mensaje al worker
+// Envío de datos al worker mediante el método postMessage
+// Se envía un objeto con dos propiedades:
+// - tipo: identifica la operación que debe realizar el worker ("codificar")
+// - mensaje: contiene el texto extenso que debe ser procesado
+// Este método es asíncrono y no bloquea el hilo principal
 miWorker.postMessage({tipo: "codificar", mensaje: textMuyLargo});
 
-// Como recibir un mensaje desde el worker
+// Configuración del manejador de eventos para recibir respuestas del worker
+// El evento 'message' se dispara cuando el worker envía datos de vuelta al hilo principal
+// usando su propio método postMessage
 miWorker.onmessage = function (e) {
+    // e.data contiene el objeto enviado por el worker
+    // Asumimos que el worker devuelve un objeto con una propiedad 'resultado'
+    // que contiene el texto procesado o codificado
     console.log(e.data.resultado);
+    
+    // MEJORA POTENCIAL: Mostrar el resultado en la interfaz de usuario
+    // document.getElementById('resultado').textContent = e.data.resultado;
+    
+    // MEJORA POTENCIAL: Medir y mostrar el tiempo de procesamiento
+    // const tiempoFinal = performance.now();
+    // console.log(`Procesamiento completado en ${tiempoFinal - tiempoInicial} ms`);
 }
+
+// MEJORA POTENCIAL: Configurar un manejador de errores para el worker
+// miWorker.onerror = function(error) {
+//   console.error('Error en el Web Worker:', error.message);
+//   // Mostrar mensaje de error al usuario
+//   document.getElementById('error').textContent = 'Error al procesar el texto';
+// };
+
+// MEJORA POTENCIAL: Función para terminar el worker cuando ya no sea necesario
+// function terminarWorker() {
+//   miWorker.terminate();
+//   console.log('Worker terminado');
+// }
 
