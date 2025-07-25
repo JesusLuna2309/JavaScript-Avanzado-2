@@ -20,7 +20,7 @@
 ## 🛠 Tecnologías y herramientas
 
 <p>
-  <img src="https://skillicons.dev/icons?i=js,ts,nodejs,vite,webpack,html,css,git,vscode" />
+  <img src="https://skillicons.dev/icons?i=js,ts,nodejs,webpack,html,css,git,vscode" />
 </p>
 
 ---
